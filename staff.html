@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Register</title>
+
+  <style>
+    body {
+      font-family:sans-serif;
+      /* text-align: center; */
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    h1, h2{
+      color: #333;
+      text-align: center;
+    }
+
+    h3{
+        color: #331f5a; 
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 1000px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #9046cc;
+      color: white;
+      font-size: large;
+    }
+
+    .section {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      border-radius: 4px;
+    }
+
+    p {
+      margin: 5px 0;
+      color: black;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 10px;
+      background-color: #b16cee;
+      color: white;
+      text-align: center;
+    }
+
+    a {
+      color: #18022c;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Staff Register</h1>
+
+  <div id="result" class="section"></div>
+  <div id="genderGroup" class="section"></div>
+  <div id="departmentGroup" class="section"></div>
+  <div id="ageGroup" class="section"></div>
+
+  <footer>
+    View Here <a href="https://github.com/Kristyidu/newstudents">GitHub</a>
+  </footer>
+
+  <script>
+    let staffList = [
+      { name: "Aminat Bola", id: "001", designation: "Manager", department: "HR", gender: "Female", age: 45 },
+      { name: "Bob Visty", id: "002", designation: "Engineer", department: "IT", gender: "Male", age: 32 },
+      { name: "Clemtina Audu", id: "003", designation: "Technician", department: "Maintenance", gender: "Female", age: 28 },
+      { name: "David Mark", id: "004", designation: "Accountant", department: "Finance", gender: "Male", age: 41 },
+      { name: "Emma Daniel", id: "005", designation: "Receptionist", department: "Admin", gender: "Female", age: 30 },
+      { name: "Frank Eddy", id: "006", designation: "IT Support", department: "IT", gender: "Male", age: 27 },
+      { name: "Graious Mercy", id: "007", designation: "Cleaner", department: "Maintenance", gender: "Female", age: 50 },
+      { name: "Henry Danger", id: "008", designation: "Auditor", department: "Finance", gender: "Male", age: 38 },
+      { name: "Blue Ivy", id: "009", designation: "Assistant", department: "HR", gender: "Female", age: 26 },
+      { name: "Josh Joshua", id: "010", designation: "Clerk", department: "Admin", gender: "Male", age: 34 }
+    ];
+
+    let result = document.getElementById("result");
+    let staffHTML = "<table><tr><th>SN</th><th>Name</th><th>Staff ID</th><th>Designation</th><th>Department</th><th>Gender</th><th>Age</th></tr>";
+    staffList.forEach((staff, index) => {
+      staffHTML += `<tr><td>${index + 1}</td><td>${staff.name}</td><td>${staff.id}</td><td>${staff.designation}</td><td>${staff.department}</td><td>${staff.gender}</td><td>${staff.age}</td></tr>`;
+    });
+    staffHTML += "</table>";
+    result.innerHTML = staffHTML;
+
+    // Group by Gender
+    let genderGroup = {};
+    staffList.forEach(staff => {
+      if (!genderGroup[staff.gender]) genderGroup[staff.gender] = [];
+      genderGroup[staff.gender].push(staff);
+    });
+
+    let genderDiv = document.getElementById("genderGroup");
+    let genderHTML = "<h2>Staff by Gender</h2>";
+    for (let gender in genderGroup) {
+      genderHTML += `<h3>${gender}</h3>`;
+      genderGroup[gender].forEach((staff, idx) => {
+        genderHTML += `<p>${idx + 1}. ${staff.name} — ${staff.designation}</p>`;
+      });
+    }
+    genderDiv.innerHTML = genderHTML;
+
+    // Group by Department
+    let departmentGroup = {};
+    staffList.forEach(staff => {
+      if (!departmentGroup[staff.department]) departmentGroup[staff.department] = [];
+      departmentGroup[staff.department].push(staff);
+    });
+
+    let deptDiv = document.getElementById("departmentGroup");
+    let deptHTML = "<h2>Staff by Department</h2>";
+    for (let dept in departmentGroup) {
+      deptHTML += `<h3>${dept}</h3>`;
+      departmentGroup[dept].forEach((staff, idx) => {
+        deptHTML += `<p>${idx + 1}. ${staff.name} — ${staff.designation}</p>`;
+      });
+    }
+    deptDiv.innerHTML = deptHTML;
+
+    // Group by Age Range
+    function getAgeRange(age) {
+      if (age < 30) return "Under 30";
+      if (age <= 40) return "31–40";
+      return "41+";
+    }
+
+    let ageGroup = {};
+    staffList.forEach(staff => {
+      let range = getAgeRange(staff.age);
+      if (!ageGroup[range]) ageGroup[range] = [];
+      ageGroup[range].push(staff);
+    });
+
+    let ageDiv = document.getElementById("ageGroup");
+    let ageHTML = "<h2>Staff by Age Range</h2>";
+    for (let range in ageGroup) {
+      ageHTML += `<h3>${range}</h3>`;
+      ageGroup[range].forEach((staff, idx) => {
+        ageHTML += `<p>${idx + 1}. ${staff.name} — Age: ${staff.age}</p>`;
+      });
+    }
+    ageDiv.innerHTML = ageHTML;
+  </script>
+</body>
+</html>

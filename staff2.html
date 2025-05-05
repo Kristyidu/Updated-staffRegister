@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Register</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    h1, h2, h3 {
+      color: #333;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 1000px;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .section {
+      max-width: 1000px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+
+    p {
+      margin: 5px 0;
+      color: #444;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding: 10px;
+      background-color: #333;
+      color: white;
+    }
+
+    a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    form {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Staff Register</h1>
+
+  <div class="section">
+    <h2>Add New Staff</h2>
+    <form id="staffForm">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="text" id="id" placeholder="Staff ID" required />
+      <input type="text" id="designation" placeholder="Designation" required />
+      <select id="department" required>
+        <option value="" disabled selected>Department</option>
+        <option>HR</option>
+        <option>IT</option>
+        <option>Finance</option>
+        <option>Maintenance</option>
+        <option>Admin</option>
+      </select>
+      <select id="gender" required>
+        <option value="" disabled selected>Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+      <input type="number" id="age" placeholder="Age" required />
+      <button type="submit">Add Staff</button>
+    </form>
+  </div>
+
+  <div id="result" class="section"></div>
+  <div id="genderGroup" class="section"></div>
+  <div id="departmentGroup" class="section"></div>
+  <div id="ageGroup" class="section"></div>
+
+  <footer>
+    View Here <a href="https://github.com/Kristyidu/newstudents">GitHub</a>
+  </footer>
+
+  <script>
+    let staffList = [
+      { name: "Alice", id: "S001", designation: "Manager", department: "HR", gender: "Female", age: 45 },
+      { name: "Bob", id: "S002", designation: "Engineer", department: "IT", gender: "Male", age: 32 },
+      { name: "Clara", id: "S003", designation: "Technician", department: "Maintenance", gender: "Female", age: 28 },
+      { name: "David", id: "S004", designation: "Accountant", department: "Finance", gender: "Male", age: 41 },
+      { name: "Ella", id: "S005", designation: "Receptionist", department: "Admin", gender: "Female", age: 30 }
+    ];
+
+    const form = document.getElementById("staffForm");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      let newStaff = {
+        name: document.getElementById("name").value.trim(),
+        id: document.getElementById("id").value.trim(),
+        designation: document.getElementById("designation").value.trim(),
+        department: document.getElementById("department").value,
+        gender: document.getElementById("gender").value,
+        age: parseInt(document.getElementById("age").value)
+      };
+
+      staffList.push(newStaff);
+      form.reset();
+      renderAll();
+    });
+
+    function renderAll() {
+      renderTable();
+      renderGenderGroup();
+      renderDepartmentGroup();
+      renderAgeGroup();
+    }
+
+    function renderTable() {
+      let result = document.getElementById("result");
+      let staffHTML = "<table><tr><th>SN</th><th>Name</th><th>Staff ID</th><th>Designation</th><th>Department</th><th>Gender</th><th>Age</th></tr>";
+      staffList.forEach((staff, index) => {
+        staffHTML += `<tr><td>${index + 1}</td><td>${staff.name}</td><td>${staff.id}</td><td>${staff.designation}</td><td>${staff.department}</td><td>${staff.gender}</td><td>${staff.age}</td></tr>`;
+      });
+      staffHTML += "</table>";
+      result.innerHTML = staffHTML;
+    }
+
+    function renderGenderGroup() {
+      let genderGroup = {};
+      staffList.forEach(staff => {
+        if (!genderGroup[staff.gender]) genderGroup[staff.gender] = [];
+        genderGroup[staff.gender].push(staff);
+      });
+
+      let genderDiv = document.getElementById("genderGroup");
+      let genderHTML = "<h2>Staff by Gender</h2>";
+      for (let gender in genderGroup) {
+        genderHTML += `<h3>${gender}</h3>`;
+        genderGroup[gender].forEach((staff, idx) => {
+          genderHTML += `<p>${idx + 1}. ${staff.name} — ${staff.designation}</p>`;
+        });
+      }
+      genderDiv.innerHTML = genderHTML;
+    }
+
+    function renderDepartmentGroup() {
+      let departmentGroup = {};
+      staffList.forEach(staff => {
+        if (!departmentGroup[staff.department]) departmentGroup[staff.department] = [];
+        departmentGroup[staff.department].push(staff);
+      });
+
+      let deptDiv = document.getElementById("departmentGroup");
+      let deptHTML = "<h2>Staff by Department</h2>";
+      for (let dept in departmentGroup) {
+        deptHTML += `<h3>${dept}</h3>`;
+        departmentGroup[dept].forEach((staff, idx) => {
+          deptHTML += `<p>${idx + 1}. ${staff.name} — ${staff.designation}</p>`;
+        });
+      }
+      deptDiv.innerHTML = deptHTML;
+    }
+
+    function getAgeRange(age) {
+      if (age < 30) return "Under 30";
+      if (age <= 40) return "31–40";
+      return "41+";
+    }
+
+    function renderAgeGroup() {
+      let ageGroup = {};
+      staffList.forEach(staff => {
+        let range = getAgeRange(staff.age);
+        if (!ageGroup[range]) ageGroup[range] = [];
+        ageGroup[range].push(staff);
+      });
+
+      let ageDiv = document.getElementById("ageGroup");
+      let ageHTML = "<h2>Staff by Age Range</h2>";
+      for (let range in ageGroup) {
+        ageHTML += `<h3>${range}</h3>`;
+        ageGroup[range].forEach((staff, idx) => {
+          ageHTML += `<p>${idx + 1}. ${staff.name} — Age: ${staff.age}</p>`;
+        });
+      }
+      ageDiv.innerHTML = ageHTML;
+    }
+
+    // Initial render
+    renderAll();
+  </script>
+</body>
+</html>

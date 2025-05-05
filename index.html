@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Register</title>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 5px;
+      font-size: 16px;
+    }
+    table {
+      width: 90%;
+      max-width: 800px;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    .group-section {
+      margin-top: 20px;
+      width: 90%;
+      max-width: 800px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .form-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Staff Register</h2>
+
+  <div class="form-section">
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="text" id="staffId" placeholder="Staff ID">
+
+    <select id="department">
+      <option value="HR">HR</option>
+      <option value="Finance">Finance</option>
+      <option value="Engineering">Engineering</option>
+      <option value="Marketing">Marketing</option>
+      <option value="Support">Support</option>
+    </select>
+
+    <select id="gender">
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+    
+    <input type="number" id="age" placeholder="Age">
+    <button onclick="addStaff()">Add Staff</button>
+  </div>
+
+  <h3>All Staff</h3>
+  <table id="staffTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Staff ID</th>
+        <th>Department</th>
+        <th>Gender</th>
+        <th>Age</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="group-section">
+    <h3>Group by Gender</h3>
+    <ul id="genderGroup"></ul>
+  </div>
+
+  <div class="group-section">
+    <h3>Group by Department</h3>
+    <ul id="departmentGroup"></ul>
+  </div>
+
+  <div class="group-section">
+    <h3>Group by Age Range</h3>
+    <ul id="ageGroup"></ul>
+  </div>
+
+  <script>
+    const staffList = [];
+
+    function addStaff() {
+      const name = document.getElementById('name').value.trim();
+      const staffId = document.getElementById('staffId').value.trim();
+      const department = document.getElementById('department').value;
+      const gender = document.getElementById('gender').value;
+      const age = parseInt(document.getElementById('age').value);
+      
+      if (!name || !staffId || isNaN(age)) return;
+
+      staffList.push({ name, staffId, department, gender, age });
+      document.getElementById('name').value = '';
+      document.getElementById('staffId').value = '';
+      document.getElementById('age').value = '';
+
+      renderStaff();
+      groupStaff();
+    }
+
+    function renderStaff() {
+      const tbody = document.querySelector('#staffTable tbody');
+      tbody.innerHTML = '';
+
+      staffList.forEach(staff => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${staff.name}</td>
+          <td>${staff.staffId}</td>
+          <td>${staff.department}</td>
+          <td>${staff.gender}</td>
+          <td>${staff.age}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function groupStaff() {
+      const genderGroup = {};
+      const deptGroup = {};
+      const ageGroup = {
+        'Under 30': [],
+        '30-50': [],
+        'Over 50': []
+      };
+
+      staffList.forEach(({ name, gender, department, age }) => {
+        if (!genderGroup[gender]) genderGroup[gender] = [];
+        genderGroup[gender].push(name);
+
+        if (!deptGroup[department]) deptGroup[department] = [];
+        deptGroup[department].push(name);
+
+        if (age < 30) ageGroup['Under 30'].push(name);
+        else if (age <= 50) ageGroup['30-50'].push(name);
+        else ageGroup['Over 50'].push(name);
+      });
+
+      displayGroup('genderGroup', genderGroup);
+      displayGroup('departmentGroup', deptGroup);
+      displayGroup('ageGroup', ageGroup);
+    }
+
+    function displayGroup(id, groupObj) {
+      const ul = document.getElementById(id);
+      ul.innerHTML = '';
+      for (const key in groupObj) {
+        const li = document.createElement('li');
+        li.textContent = `${key}: ${groupObj[key].join(', ')}`;
+        ul.appendChild(li);
+      }
+    }
+  </script>
+</body>
+</html>
